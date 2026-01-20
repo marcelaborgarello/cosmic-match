@@ -252,7 +252,10 @@ export const useGameStore = create<GameStore>()(
 
                     // MOTIVATION: Coins per match!
                     // Simple formula: 1 Coin per 10 points, min 1.
-                    const coinsEarned = Math.max(1, Math.floor(points / 5));
+                    const matchCoins = Math.max(1, Math.floor(points / 5));
+                    // Bonus: If combo > 0, give extra coins!
+                    const comboBonus = combo > 0 ? (combo + 1) * 2 : 0;
+                    const totalCoinsEarned = matchCoins + comboBonus;
 
                     // Update state properly
                     // We need to get current coins first
@@ -294,7 +297,7 @@ export const useGameStore = create<GameStore>()(
                         set({
                             grid: newGrid,
                             score: Math.floor(score + points),
-                            coins: currentCoins + coinsEarned, // Add coins
+                            coins: currentCoins + totalCoinsEarned, // Add coins
                             selectedId: null,
                             combo: combo + 1,
                             history: newHistory,
@@ -311,7 +314,7 @@ export const useGameStore = create<GameStore>()(
                         set({
                             grid: newGrid,
                             score: Math.floor(score + points),
-                            coins: currentCoins + coinsEarned, // Add coins
+                            coins: currentCoins + totalCoinsEarned, // Add coins
                             selectedId: null,
                             combo: combo + 1,
                             history: newHistory,
@@ -403,10 +406,31 @@ export const useGameStore = create<GameStore>()(
                 const isEmpty = activeCells.length === 0;
 
                 if (!isEmpty && addsCount >= MAX_ADDS) {
-                    // Cannot add more -> Check if game over? 
-                    // Usually Game Over is when no moves AND cannot add.
-                    // We just return here, getHint will handle the GameOver trigger if no moves.
-                    return;
+                    // Purchase Moves Logic
+                    // If user has > 50 coins, auto-buy 5 more adds?
+                    // Or we need a UI prompt. For now, let's implement a simple "Buy if Clicked" logic via a separate action,
+                    // BUT for this constraint, let's just allow the user to click "Add Rows" again if they have coins?
+                    // No, that's ambiguous.
+                    // Let's rely on the hint system. "Dame 10 posibles ayuda".
+
+                    // User Request: "If I want 5 more, 50 coins"
+                    // We need a way to trigger this purchase.
+                    // Currently `addRows` is called by the button.
+                    const cost = 50;
+                    if (get().coins >= cost) {
+                        // Buy 5 more adds (reduce counts)
+                        // effectively increasing the "cap" or reducing the "current count".
+                        // Let's reduce current count by 5 to allow 5 more additions.
+                        set({
+                            coins: get().coins - cost,
+                            addsCount: Math.max(0, addsCount - 5)
+                        });
+                        // And perform the add immediately? Yes.
+                    } else {
+                        // Cannot afford -> Ignore or Show Error (Shake)
+                        // Maybe return to trigger shake UI
+                        return;
+                    }
                 }
 
                 if (grid.length >= 200) { // Hard cap for size
@@ -433,14 +457,20 @@ export const useGameStore = create<GameStore>()(
                 }
 
                 // Normal Add Rows logic
-                const newCells = activeCells.map(c => ({
-                    ...c,
+                // Generate NEW lines instead of cloning existing ones
+                const CELLS_TO_ADD = 9; // One row
+                const { minNumber, maxNumber } = level;
+
+                const newCells: import('@/types/game').Cell[] = Array.from({ length: CELLS_TO_ADD }, (_, i) => ({
                     id: safeUUID(),
-                    status: 'active' as const,
-                    index: 0
+                    value: Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber,
+                    status: 'active',
+                    index: 0 // Will be re-indexed below
                 }));
 
                 const currentGrid = [...grid];
+                // Insert at the end? Or beginning? Usually 'add rows' pushes from bottom/top.
+                // Standard logic: append to end.
                 const combinedGrid = [...currentGrid, ...newCells];
                 const reIndexedGrid = combinedGrid.map((c, i) => ({ ...c, index: i }));
 
@@ -510,8 +540,12 @@ export const useGameStore = create<GameStore>()(
                         id: nextLevelId,
                         gridSize: nextGridSize,
                         currentCount: 0,
-                        targetCount: Math.floor(state.level.targetCount * 1.5), // Score scales up
-                        maxNumber: Math.min(9, 9 + Math.floor(nextLevelId / 10))
+                        targetCount: Math.floor(state.level.targetCount * 1.6), // Sharper increase (1.5 -> 1.6)
+                        maxNumber: Math.min(9, Math.max(9, 5 + Math.floor(nextLevelId / 3))) // Start at 1-9 faster?
+                        // Actually, standard game starts at 1-9 immediately.
+                        // Let's make it start at 1-5 and grow? User said "hacé un poco más difícil cada nivel".
+                        // If we already have 1-9, it's max difficulty number-wise.
+                        // Let's keep 1-9 but increase TARGET drastically.
                     },
                     grid: generateGrid(nextGridSize, state.level.minNumber, state.level.maxNumber),
                     isVictory: false,
