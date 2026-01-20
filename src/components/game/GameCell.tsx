@@ -37,10 +37,9 @@ export const GameCell: React.FC<GameCellProps> = ({ cell }) => {
 
     const isCleared = cell.status === 'cleared';
     const isClearing = cell.status === 'clearing';
-    const isEmpty = cell.status === 'empty';
 
     const handleClick = () => {
-        if (!isCleared && !isClearing && !isEmpty) { // Block interaction
+        if (!isCleared && !isClearing) { // Block interaction
             playSelect();
             selectCell(cell.index);
         }
@@ -50,9 +49,7 @@ export const GameCell: React.FC<GameCellProps> = ({ cell }) => {
     return (
         <div className="relative aspect-square flex items-center justify-center p-[2px]">
             <AnimatePresence mode="popLayout">
-                {isEmpty ? (
-                    <div className="w-full h-full border border-white/5 bg-transparent" />
-                ) : !isCleared ? (
+                {!isCleared ? (
                     <motion.button
                         layout
                         layoutId={cell.id}
@@ -107,7 +104,7 @@ export const GameCell: React.FC<GameCellProps> = ({ cell }) => {
                             "drop-shadow-[0_0_8px_currentColor] filter",
                             isSelected && "drop-shadow-none text-white",
                             "pointer-events-none" // prevent span clicks
-                        )}>{cell.value > 0 ? cell.value : ''}</span>
+                        )}>{cell.value}</span>
                     </motion.button>
                 ) : (
                     <div className="w-full h-full border border-white/10 bg-white/5" />
