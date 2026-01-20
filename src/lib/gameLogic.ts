@@ -16,13 +16,25 @@ export const safeUUID = () => {
 export const generateGrid = (count: number = 30, min: number = 1, max: number = 9): Grid => {
     // If count is odd, make it even
     const safeCount = count % 2 === 0 ? count : count + 1;
+    const TOTAL_SLOTS = 81; // 9x9 Grid full screen
 
-    return Array.from({ length: safeCount }, (_, i) => ({
-        id: safeUUID(),
-        value: Math.floor(Math.random() * (max - min + 1)) + min,
-        status: 'active',
-        index: i
-    }));
+    return Array.from({ length: TOTAL_SLOTS }, (_, i) => {
+        if (i < safeCount) {
+            return {
+                id: safeUUID(),
+                value: Math.floor(Math.random() * (max - min + 1)) + min,
+                status: 'active',
+                index: i
+            };
+        } else {
+            return {
+                id: safeUUID(),
+                value: 0, // Placeholder
+                status: 'empty',
+                index: i
+            };
+        }
+    });
 };
 
 

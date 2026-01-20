@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌌 Cosmic Match
 
-## Getting Started
+**Cosmic Match** es un adictivo juego de puzles numéricos con un toque de colección.
+Combina la lógica clásica de "eliminar pares" (suma 10 o iguales) con un sistema de **Gacha y Mascotas** que te recompensará por tu progreso.
 
-First, run the development server:
+![Cosmic Match Gameplay](/public/assets/images/mascot_dragon.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🎮 Características
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Puzles Infinitos**: Tableros generados proceduralmente que aseguran pares válidos.
+- **Sistema Gacha**: Usa tus monedas para invocar huevos misteriosos.
+- **Colección de Mascotas**: Desbloquea compañeros (Perro, Gato, Robot, Dragón) y equípalos.
+- **Progresión Visual**: Tu mascota te acompaña flotando en el juego.
+- **Economía**: Gana monedas por cada "match" que hagas.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Tecnologías
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Next.js 14** (App Router)
+- **TypeScript** & **React**
+- **Zustand** (Estado y Persistencia Local)
+- **Tailwind CSS** (Estilos modernos y oscuros)
+- **Framer Motion** (Animaciones fluidas)
 
-## Learn More
+## 🛠️ Instalación
 
-To learn more about Next.js, take a look at the following resources:
+1.  Clona el repositorio:
+    ```bash
+    git clone https://github.com/marcelaborgarello/cosmic-match.git
+    ```
+2.  Instala dependencias:
+    ```bash
+    npm install
+    # o
+    bun install
+    ```
+3.  Corre el servidor de desarrollo:
+    ```bash
+    npm run dev
+    # o
+    bun dev
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📱 Despliegue
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Este proyecto está optimizado para **Vercel**. Simplemente conecta tu repositorio y despliega.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+Hecho con 💜 por Marcela.

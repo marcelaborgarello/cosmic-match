@@ -13,8 +13,7 @@ export const CollectionScreen: React.FC = () => {
         inventory,
         unlockMascot,
         equipMascot,
-        equippedMascotId,
-        cheatAddCoins
+        equippedMascotId
     } = useGameStore();
 
     const [isOpening, setIsOpening] = useState(false);
@@ -44,24 +43,18 @@ export const CollectionScreen: React.FC = () => {
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent scale-[2] pointer-events-none" />
 
-            {/* Header */}
-            <div className="z-10 w-full p-4 flex justify-between items-start">
+            {/* Header / Stats */}
+            <div className="flex justify-between items-center w-full mb-8 relative z-10">
                 <button
                     onClick={goToMenu}
-                    className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 backdrop-blur-md border border-white/20 transition-all active:scale-95"
+                    className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-white hover:bg-white/20 transition-all"
                 >
                     <ArrowLeft size={24} />
                 </button>
 
-                <div className="flex items-center gap-2 bg-black/40 px-4 py-2 rounded-full border border-white/10">
-                    <Coins className="text-yellow-400" size={18} />
-                    <span className="text-lg font-bold text-yellow-100">{coins}</span>
-                    <button
-                        onClick={cheatAddCoins}
-                        className="ml-2 w-5 h-5 flex items-center justify-center bg-green-500 rounded-full text-white font-bold text-xs"
-                    >
-                        +
-                    </button>
+                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-5 py-2 rounded-full border border-amber-500/30">
+                    <Coins className="text-amber-400" size={20} />
+                    <span className="text-xl font-bold text-amber-100">{coins}</span>
                 </div>
             </div>
 

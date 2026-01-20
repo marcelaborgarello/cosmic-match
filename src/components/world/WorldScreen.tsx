@@ -48,14 +48,7 @@ export const WorldScreen: React.FC = () => {
                     <div className="pointer-events-auto flex items-center gap-2 bg-slate-900/80 px-4 py-2 rounded-full border border-yellow-500/30 shadow-xl">
                         <Coins className="text-yellow-400" size={18} />
                         <span className="text-lg font-bold text-yellow-100">{coins}</span>
-                        {/* Cheat Button */}
-                        <button
-                            onClick={(e) => { e.stopPropagation(); useGameStore.getState().cheatAddCoins(); }}
-                            className="ml-2 w-6 h-6 flex items-center justify-center bg-green-500 rounded-full text-white font-bold text-xs hover:bg-green-400 shadow-md"
-                            title="Dame Monedas"
-                        >
-                            +
-                        </button>
+
                     </div>
                 </div>
 

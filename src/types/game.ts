@@ -1,4 +1,4 @@
-export type CellStatus = 'active' | 'selected' | 'cleared' | 'hint' | 'clearing';
+export type CellStatus = 'active' | 'selected' | 'cleared' | 'hint' | 'clearing' | 'empty';
 
 export interface Building {
     id: string;

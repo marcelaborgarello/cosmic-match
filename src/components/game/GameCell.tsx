@@ -37,9 +37,10 @@ export const GameCell: React.FC<GameCellProps> = ({ cell }) => {
 
     const isCleared = cell.status === 'cleared';
     const isClearing = cell.status === 'clearing';
+    const isEmpty = cell.status === 'empty';
 
     const handleClick = () => {
-        if (!isCleared && !isClearing) { // Block interaction during clearing
+        if (!isCleared && !isClearing && !isEmpty) { // Block interaction
             playSelect();
             selectCell(cell.index);
         }
@@ -106,6 +107,8 @@ export const GameCell: React.FC<GameCellProps> = ({ cell }) => {
                             "pointer-events-none" // prevent span clicks
                         )}>{cell.value}</span>
                     </motion.button>
+                ) : isEmpty ? (
+                    <div className="w-full h-full border border-white/5 bg-transparent" />
                 ) : (
                     <div className="w-full h-full border border-white/10 bg-white/5" />
                 )}

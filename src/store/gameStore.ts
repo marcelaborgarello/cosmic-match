@@ -41,7 +41,6 @@ interface GameStore extends GameState, GameActions {
     startGame: () => void;
     goToWorld: () => void;
     buildBuilding: (worldId: string, buildingId: string) => void;
-    cheatAddCoins: () => void;
 }
 
 
@@ -136,7 +135,7 @@ export const useGameStore = create<GameStore>()(
                 }
             },
 
-            cheatAddCoins: () => set(state => ({ coins: state.coins + 5000 })),
+
 
             // Collection Actions
             unlockMascot: () => {
