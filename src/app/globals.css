@@ -1,26 +1,41 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-game-bg: #2e1065;
+  /* violet-950 */
+  --color-game-panel: #4c1d95;
+  /* violet-900 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #1e1b4b;
+  /* indigo-950 */
+  --foreground: #ffffff;
+
+  /* Game Colors */
+  --color-cell-bg: #312e81;
+  /* indigo-900 */
+  --color-cell-text: #e0e7ff;
+  /* indigo-100 */
+
+  --color-select-bg: #fb923c;
+  /* orange-400 */
+  --color-select-text: #fff;
+
+  --color-hint-bg: #ec4899;
+  /* pink-500 */
+  --color-hint-ring: #fbcfe8;
+  /* pink-200 */
 }
 
+/* Force dark mode style basically because the design is dark */
 body {
-  background: var(--background);
+  background: radial-gradient(circle at top, #4c1d95, #1e1b4b);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
 }

@@ -1,65 +1,112 @@
-import Image from "next/image";
+'use client';
+
+import { GameBoard } from "@/components/game/GameBoard";
+import { WorldScreen } from "@/components/world/WorldScreen";
+
+
+import { GameHeader } from "@/components/game/GameHeader";
+import { GameControls } from "@/components/game/GameControls";
+import { GameModal } from "@/components/game/GameModal";
+import { MainMenu } from '@/components/menu/MainMenu';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useGameStore } from '@/store/gameStore';
+import { useGameSounds } from '@/hooks/useGameSounds';
+import { CollectionScreen } from '@/components/collection/CollectionScreen';
+import { AVAILABLE_MASCOTS } from "@/types/game"; // Added import
+
+// Simple Mascot Component
+const MascotCompanion = () => {
+  const equippedId = useGameStore(s => s.equippedMascotId);
+  const mascot = AVAILABLE_MASCOTS.find(m => m.id === equippedId);
+
+  if (!mascot) return null;
+
+  return (
+    <div className="absolute top-24 left-4 z-40 pointer-events-none">
+      <motion.div
+        animate={{ y: [0, -15, 0], rotate: [0, 5, -5, 0] }}
+        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+        className="w-20 h-20 rounded-full overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.3)] bg-white/10 backdrop-blur-sm border border-white/20"
+      >
+        <img src={mascot.image} alt="Companion" className="w-full h-full object-cover mix-blend-multiply" />
+      </motion.div>
+    </div>
+  );
+};
+
 
 export default function Home() {
+  const { isPaused, isGameOver, isLevelComplete, currentScreen, goToMenu } = useGameStore();
+  const { initAudio } = useGameSounds();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main
+      className="flex min-h-screen flex-col items-center bg-slate-950 relative overflow-hidden h-[100dvh]"
+      onClick={initAudio}
+    >
+      {/* Background Ambience */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/40 via-slate-950 to-slate-950 -z-10" />
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay -z-10" />
+
+      <AnimatePresence mode="wait">
+
+        {/* VIEW 1: MAIN MENU */}
+        {currentScreen === 'MENU' && (
+          <motion.div
+            key="menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute inset-0 z-20"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <MainMenu />
+          </motion.div>
+        )}
+
+        {/* VIEW 2: COLLECTION (GACHA) */}
+        {currentScreen === 'MAP' && (
+          <motion.div
+            key="collection"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="absolute inset-0 z-20"
           >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            <CollectionScreen />
+          </motion.div>
+        )}
+
+        {/* VIEW 3: GAME */}
+        {currentScreen === 'GAME' && (
+          <motion.div
+            key="game"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="w-full h-full flex flex-col max-w-md mx-auto relative z-10 p-2"
+          >
+            <GameHeader />
+
+            {/* Mascot Companion */}
+            <MascotCompanion />
+
+            <div className="flex-1 w-full relative my-2 overflow-hidden flex flex-col justify-start">
+              <div className="overflow-y-auto scrollbar-hide h-full pb-20 mask-bottom">
+                <GameBoard />
+              </div>
+
+              {/* Floating Controls Layer */}
+              <div className="absolute bottom-0 left-0 right-0 z-20 pb-2 pt-8 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent">
+                <GameControls />
+              </div>
+            </div>
+
+            {/* Modals Layer */}
+            <GameModal />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+    </main>
   );
 }
